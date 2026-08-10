@@ -1,0 +1,13 @@
+.git
+.github
+.gitignore
+.rspec_status
+/tmp
+/pkg
+/coverage
+/doc
+/vendor/bundle
+*.gem
+README.md
+LICENSE.txt
+CODE_OF_CONDUCT.md

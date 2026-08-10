@@ -1,0 +1,11 @@
+services:
+  routly:
+    build: .
+    image: routly:latest
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    command: bundle exec routly
+
+volumes:
+  bundle_cache:
