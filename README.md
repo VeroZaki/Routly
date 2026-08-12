@@ -1,6 +1,8 @@
 # Routly
 
-A Ruby gem project.
+Rails API that shortens URLs. Send a long URL and get a short one back; send the short one and get the original. Data lives in Postgres so it survives restarts.
+
+Endpoints: **POST /encode** and **POST /decode** (JSON). Encoding the same URL twice returns the same short link. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how it’s built.
 
 ## How to start
 
@@ -16,26 +18,41 @@ colima start
 docker compose up --build
 ```
 
-You should see `Routly 0.1.0`.
+The API is at **http://localhost:3000**.
 
-### Other useful commands
+### Try it
 
 ```bash
-docker compose run --rm routly bundle exec rspec  # tests
-docker compose run --rm routly bash               # shell
+curl -X POST http://localhost:3000/encode \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://codesubmit.io/library/react"}'
+
+curl -X POST http://localhost:3000/decode \
+  -H "Content-Type: application/json" \
+  -d '{"short_url":"http://localhost:3000/GeAi9K"}'
 ```
 
 ## Local setup (without Docker)
 
 ```bash
-bin/setup
-bundle exec routly
+cp .env.example .env
+bundle install
+bundle exec rake db:create db:migrate
+bundle exec puma config.ru -p 3000
 ```
 
-## Development
+## Tests
 
 ```bash
-bundle exec rspec   # run tests
-bundle exec rubocop # lint
-bin/console         # interactive prompt
+bundle exec rake test
 ```
+
+## API
+
+### Encode
+
+`POST /encode` with `{ "url": "https://example.com" }` → `201` `{ "short_url", "original_url" }`
+
+### Decode
+
+`POST /decode` with `{ "short_url": "http://localhost:3000/Ab12Cd" }` → `200` `{ "original_url" }`

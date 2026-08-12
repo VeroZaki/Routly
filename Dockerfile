@@ -1,18 +1,20 @@
 FROM ruby:3.3.10-slim
 
-WORKDIR /app
-
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git && \
+    apt-get install --no-install-recommends -y build-essential libpq-dev postgresql-client git && \
     rm -rf /var/lib/apt/lists/*
 
-COPY Gemfile Gemfile.lock *.gemspec ./
-COPY lib/routly/version.rb lib/routly/version.rb
+WORKDIR /app
 
-RUN bundle install
+COPY Gemfile Gemfile.lock ./
+RUN bundle config set --local deployment 'true' && \
+    bundle config set --local without 'development test' && \
+    bundle install
 
 COPY . .
+RUN chmod +x /app/bin/docker-entrypoint
 
-RUN bundle install
+EXPOSE 3000
 
-CMD ["bundle", "exec", "routly"]
+ENTRYPOINT ["/app/bin/docker-entrypoint"]
+CMD ["bundle", "exec", "puma", "config.ru", "-p", "3000"]
