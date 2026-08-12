@@ -44,7 +44,9 @@ bundle exec puma config.ru -p 3000
 ## Tests
 
 ```bash
-bundle exec rake test
+docker compose run --rm --entrypoint "" -v "$PWD:/app" \
+  -e RAILS_ENV=test -e PGHOST=db -e PGUSER=postgres -e PGPASSWORD=postgres \
+  app bin/test
 ```
 
 ## API

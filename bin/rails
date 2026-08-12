@@ -1,17 +1,12 @@
 #!/usr/bin/env ruby
-# Minimal binstub so "rails test" runs the test suite (this app has no full rails CLI)
-
-APP_PATH = File.expand_path("../config/application", __dir__)
+# Minimal binstub. Prefer: bundle exec rake test
 
 case ARGV.first
 when "test"
-  require "rake"
-  require_relative "../config/application"
-  Rails.application.load_tasks
-  Rake::Task["test"].invoke
+  exec "bundle", "exec", "rake", "test", *ARGV.drop(1)
 else
   puts "Usage: rails test"
   puts ""
-  puts "This is a minimal Rails app. Use: bundle exec rails test"
+  puts "This is a minimal Rails app. Use: bundle exec rake test"
   exit 1
 end

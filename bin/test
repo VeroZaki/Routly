@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+export RAILS_ENV=test
+export PGHOST="${PGHOST:-db}"
+export PGUSER="${PGUSER:-postgres}"
+export PGPASSWORD="${PGPASSWORD:-postgres}"
+
+bundle config unset --local without 2>/dev/null || true
+bundle config unset --local deployment 2>/dev/null || true
+bundle install --quiet
+
+bundle exec rake db:create 2>/dev/null || true
+bundle exec rake db:schema:load
+bundle exec ruby -Itest -e 'Dir.glob("test/**/*_test.rb").sort.each { |f| require "./#{f}" }'

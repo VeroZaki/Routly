@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Ensure test DB exists and has schema before running tests
-task "test:prepare" => ["db:test:prepare"]
-
-if Rake::Task.task_defined?("test")
-  Rake::Task["test"].enhance(["db:test:prepare"])
-end
+# Prepare the test DB manually when needed:
+#   RAILS_ENV=test bundle exec rake db:prepare
+# Do not enhance `test` with db:test:prepare — purging while a connection is
+# open fails on PostgreSQL with PG::ObjectInUse.
